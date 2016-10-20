@@ -39,6 +39,7 @@
 			isa = PBXGroup;
 			children = (
 				045AD7561DB6661E00A0B0D5 /* AccessCameraPixels */,
+				045AD7691DB6667800A0B0D5 /* Other files */,
 				045AD7551DB6661E00A0B0D5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,13 +55,21 @@
 		045AD7561DB6661E00A0B0D5 /* AccessCameraPixels */ = {
 			isa = PBXGroup;
 			children = (
-				045AD7571DB6661E00A0B0D5 /* AppDelegate.swift */,
 				045AD7591DB6661E00A0B0D5 /* ViewController.swift */,
 				045AD75B1DB6661E00A0B0D5 /* Main.storyboard */,
+			);
+			path = AccessCameraPixels;
+			sourceTree = "<group>";
+		};
+		045AD7691DB6667800A0B0D5 /* Other files */ = {
+			isa = PBXGroup;
+			children = (
+				045AD7571DB6661E00A0B0D5 /* AppDelegate.swift */,
 				045AD75E1DB6661E00A0B0D5 /* Assets.xcassets */,
 				045AD7601DB6661E00A0B0D5 /* LaunchScreen.storyboard */,
 				045AD7631DB6661E00A0B0D5 /* Info.plist */,
 			);
+			name = "Other files";
 			path = AccessCameraPixels;
 			sourceTree = "<group>";
 		};
