@@ -11,8 +11,9 @@ import AVFoundation
 
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
 
-    @IBOutlet weak var cameraPreview: UIView!
-    @IBOutlet weak var processView: UIImageView!
+    
+    @IBOutlet weak var cameraView: UIView!
+    @IBOutlet weak var processedView: UIImageView!
     
     var cameraDevice: AVCaptureDevice?
     var previewLayer: AVCaptureVideoPreviewLayer?
@@ -20,6 +21,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        cameraView.backgroundColor = UIColor.red
+        processedView.backgroundColor = UIColor.green
+                
         let captureSession = AVCaptureSession()
         captureSession.sessionPreset = AVCaptureSessionPreset640x480
 
@@ -29,6 +33,10 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             for camera in deviceDiscovery.devices as [AVCaptureDevice] {
                 if camera.position == .back {
                     cameraDevice = camera
+//                    if let cam = cameraDevice {
+//                        print(cam.activeVideoMinFrameDuration)
+//                        print(cam.activeVideoMaxFrameDuration)
+//                    }
                 }
             }
             if cameraDevice == nil {
@@ -36,17 +44,17 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             }
         }
         
-        if let cam = cameraDevice {
-            let frameRateRange = cam.activeFormat.videoSupportedFrameRateRanges[0] as! AVFrameRateRange
-            do {
-                try cam.lockForConfiguration()
-                cam.activeVideoMinFrameDuration = frameRateRange.maxFrameDuration
-                cam.unlockForConfiguration()
-            } catch {
-                print("Could not set frame duration.")
-                return
-            }
-        }
+//        if let cam = cameraDevice {
+//            let frameRateRange = cam.activeFormat.videoSupportedFrameRateRanges[0] as! AVFrameRateRange
+//            do {
+//                try cam.lockForConfiguration()
+//                cam.activeVideoMinFrameDuration = frameRateRange.maxFrameDuration
+//                cam.unlockForConfiguration()
+//            } catch {
+//                print("Could not set frame duration.")
+//                return
+//            }
+//        }
 
         do {
             let videoDeviceInput = try AVCaptureDeviceInput(device: cameraDevice)            
@@ -60,11 +68,11 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 
         if let previewLayer = AVCaptureVideoPreviewLayer.init(session: captureSession) {
             previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-            previewLayer.frame = cameraPreview.bounds
+            previewLayer.frame = cameraView.bounds
             if previewLayer.connection.isVideoOrientationSupported {
                 previewLayer.connection.videoOrientation = .landscapeRight
             }
-            cameraPreview.layer.addSublayer(previewLayer)
+            cameraView.layer.addSublayer(previewLayer)
         } else {
             print("Could not add video preview layer.")
         }
@@ -73,7 +81,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as AnyHashable: Int(kCVPixelFormatType_32BGRA)]
         videoOutput.alwaysDiscardsLateVideoFrames = true
         
-        let sessionQueue = DispatchQueue(label: "session queue", attributes: [], target: nil)
+        let sessionQueue = DispatchQueue(label: "VideoQueue", attributes: [], target: nil)
         videoOutput.setSampleBufferDelegate(self, queue: sessionQueue)
         if captureSession.canAddOutput(videoOutput) {
             captureSession.addOutput(videoOutput)
@@ -87,6 +95,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 
     
     func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
+        
+        let now = Date()
+        print(now.timeIntervalSince1970)
         
         let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)!
         
@@ -127,7 +138,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         if let context = newContext {
             let cameraFrame = context.makeImage()
             DispatchQueue.main.async {
-                self.processView.image = UIImage(cgImage: cameraFrame!)
+                self.processedView.image = UIImage(cgImage: cameraFrame!)
             }
         }
         

@@ -29,11 +29,11 @@
                                 <color key="backgroundColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" white="0.5" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <outlet property="cameraPreview" destination="2P4-NW-Rte" id="bgi-PW-Olt"/>
-                        <outlet property="processView" destination="wZO-oY-CD5" id="efd-MJ-ohR"/>
+                        <outlet property="cameraView" destination="2P4-NW-Rte" id="4s4-uT-tAZ"/>
+                        <outlet property="processedView" destination="wZO-oY-CD5" id="dGX-l7-dD5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
