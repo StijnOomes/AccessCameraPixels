@@ -23,7 +23,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         
         cameraView.backgroundColor = UIColor.red
         processedView.backgroundColor = UIColor.green
-                
+        
         let captureSession = AVCaptureSession()
         captureSession.sessionPreset = AVCaptureSessionPreset640x480
 
@@ -96,8 +96,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
         
-        let now = Date()
-        print(now.timeIntervalSince1970)
+//        let now = Date()
+//        print(now.timeIntervalSince1970)
         
         let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)!
         
