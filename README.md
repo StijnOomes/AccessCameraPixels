@@ -1,5 +1,5 @@
 # AccessCameraPixels
 
-Access camera pixels with AVFoundation
+Access camera pixels with Swift 3 and iOS 10
 
-[Access camera pixels with AVFoundation](https://stijnoomes.wordpress.com/access-camera-pixels-with-av-foundation/)
+Tutorial - [Access camera pixels with AVFoundation](https://stijnoomes.wordpress.com/access-camera-pixels-with-av-foundation/)
