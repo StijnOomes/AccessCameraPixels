@@ -11,7 +11,6 @@ import AVFoundation
 
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
 
-    
     @IBOutlet weak var cameraView: UIView!
     @IBOutlet weak var processedView: UIImageView!
     
@@ -33,10 +32,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             for camera in deviceDiscovery.devices as [AVCaptureDevice] {
                 if camera.position == .back {
                     cameraDevice = camera
-//                    if let cam = cameraDevice {
-//                        print(cam.activeVideoMinFrameDuration)
-//                        print(cam.activeVideoMaxFrameDuration)
-//                    }
                 }
             }
             if cameraDevice == nil {
@@ -44,18 +39,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             }
         }
         
-//        if let cam = cameraDevice {
-//            let frameRateRange = cam.activeFormat.videoSupportedFrameRateRanges[0] as! AVFrameRateRange
-//            do {
-//                try cam.lockForConfiguration()
-//                cam.activeVideoMinFrameDuration = frameRateRange.maxFrameDuration
-//                cam.unlockForConfiguration()
-//            } catch {
-//                print("Could not set frame duration.")
-//                return
-//            }
-//        }
-
         do {
             let videoDeviceInput = try AVCaptureDeviceInput(device: cameraDevice)            
             if captureSession.canAddInput(videoDeviceInput) {
@@ -81,8 +64,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as AnyHashable: Int(kCVPixelFormatType_32BGRA)]
         videoOutput.alwaysDiscardsLateVideoFrames = true
         
-        let sessionQueue = DispatchQueue(label: "VideoQueue", attributes: [], target: nil)
-        videoOutput.setSampleBufferDelegate(self, queue: sessionQueue)
+        let videoOutputQueue = DispatchQueue(label: "VideoQueue")
+        videoOutput.setSampleBufferDelegate(self, queue: videoOutputQueue)
         if captureSession.canAddOutput(videoOutput) {
             captureSession.addOutput(videoOutput)
         } else {
