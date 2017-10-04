@@ -24,15 +24,13 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         processedView.backgroundColor = UIColor.green
         
         let captureSession = AVCaptureSession()
-        captureSession.sessionPreset = AVCaptureSessionPreset640x480
+        captureSession.sessionPreset = AVCaptureSession.Preset.vga640x480
 
-        let videoDeviceDiscoverySession = AVCaptureDeviceDiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: .unspecified)
+        let videoDeviceDiscovery = AVCaptureDevice.DiscoverySession(deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera], mediaType: AVMediaType.video, position: .unspecified)
 
-        if let deviceDiscovery = videoDeviceDiscoverySession {
-            for camera in deviceDiscovery.devices as [AVCaptureDevice] {
-                if camera.position == .back {
-                    cameraDevice = camera
-                }
+        for camera in videoDeviceDiscovery.devices as [AVCaptureDevice] {
+            if camera.position == .back {
+                cameraDevice = camera
             }
             if cameraDevice == nil {
                 print("Could not find back camera.")
@@ -40,7 +38,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         }
         
         do {
-            let videoDeviceInput = try AVCaptureDeviceInput(device: cameraDevice)            
+            let videoDeviceInput = try AVCaptureDeviceInput(device: cameraDevice!)            
             if captureSession.canAddInput(videoDeviceInput) {
                 captureSession.addInput(videoDeviceInput)
             }
@@ -49,19 +47,17 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             return
         }
 
-        if let previewLayer = AVCaptureVideoPreviewLayer.init(session: captureSession) {
-            previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-            previewLayer.frame = cameraView.bounds
-            if previewLayer.connection.isVideoOrientationSupported {
-                previewLayer.connection.videoOrientation = .landscapeRight
-            }
-            cameraView.layer.addSublayer(previewLayer)
-        } else {
-            print("Could not add video preview layer.")
+        let previewLayer = AVCaptureVideoPreviewLayer.init(session: captureSession)
+        
+        previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        previewLayer.frame = cameraView.bounds
+        if (previewLayer.connection?.isVideoOrientationSupported)! {
+            previewLayer.connection?.videoOrientation = .landscapeRight
         }
+        cameraView.layer.addSublayer(previewLayer)
         
         let videoOutput = AVCaptureVideoDataOutput()
-        videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as AnyHashable: Int(kCVPixelFormatType_32BGRA)]
+        videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as AnyHashable as! String: Int(kCVPixelFormatType_32BGRA)]
         videoOutput.alwaysDiscardsLateVideoFrames = true
         
         let videoOutputQueue = DispatchQueue(label: "VideoQueue")
@@ -72,16 +68,12 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             print("Could not add video data as output.")
         }
 
-        // start session
         captureSession.startRunning()
     }
 
     
-    func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
-        
-//        let now = Date()
-//        print(now.timeIntervalSince1970)
-        
+    func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+                
         let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)!
         
         CVPixelBufferLockBaseAddress(imageBuffer, CVPixelBufferLockFlags(rawValue: CVOptionFlags(0)))
